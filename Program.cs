@@ -12,69 +12,32 @@ namespace arbetsprob
             Console.WriteLine("Hello World!");
             var grid = GetTestGrid();
 
-            // var output = new StringBuilder('|');
-            // foreach (var col in grid.Columns)
-            // {
-            //     output.Append(col.Header);
-            //     output.Append(' ', col.Width - col.Header.Length);
-            //     output.Append('|');
-            // }
-            // output.Append(Environment.NewLine);
-            // output.AppendLine("En till rad");
-            // output.Append("Sist.");
-            // Console.Write(output.ToString());
-            // Console.ResetColor();
-            // for (var i = 0; i < 10; i++)
-            // {
             RenderGrid(grid);
 
-            // }
             //Console.Read();
         }
 
         public static void RenderGrid(Grid grid)
         {
-            const char topBorder = '_';
-            const char leftBorder = '|';
-            const char rightBorder = '|';
-            const char bottomBorder = '-';
             var contentWidth = grid.Columns.Sum(x => x.Width) + ((grid.Columns.Count() - 1) * 3) + 2;
 
-            // var header = new StringBuilder();
-            // header.Append('˧');
-            // header.Append(topBorder, contentWidth);
-            // header.Append('˧');
-            // Console.WriteLine(header);
-
-            // header.Clear();
-            // header.Append(leftBorder);
-            // for (var i = 0; i < grid.Columns.Count; i++)
-            // {
-            //     var col = grid.Columns[i];
-            //     header.Append(col.Header);
-            //     header.Append(' ', col.Width - col.Header.Length);
-            //     if (i < grid.Columns.Count - 1) header.Append('|');
-            // }
-            // header.Append(rightBorder);
-
-            //Console.WriteLine('┏' + new string('━', contentWidth) + '┓');
             Console.WriteLine('┏' + string.Join("┳", grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┓');
-            var headerContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => RenderColData(col, col.Header, true)));
-            Console.WriteLine("┃ " + headerContent + " ┃");
+            // var headerContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => RenderColData(col, col.Header, true)));
+            // Console.WriteLine("┃ " + headerContent + " ┃");
+
+            Console.WriteLine("┃ " + string.Join(" ┃ ", grid.Columns.Select(col => AlignText(col.Header, Alignment.Left, col.Width))) + " ┃");
+
             Console.WriteLine('┣' + string.Join("╋", grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┫');
 
-            //Console.WriteLine('┣' + new string('━', contentWidth) + '┫');
             // Console.BackgroundColor = ConsoleColor.DarkBlue;
             // Console.ForegroundColor = ConsoleColor.Gray;
-            Console.ResetColor();
+            // Console.ResetColor();
             for (var r = 0; r < grid.Rows.Count; r++)
             {
                 var rowContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => RenderColData(col, grid.Rows[r][i])));
                 Console.WriteLine("┃ " + rowContent + " ┃");
             }
             Console.WriteLine('┗' + string.Join('┻', grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┛');
-
-            // Render header
         }
 
         private static string Spaces(int len) { return new string(' ', len); }
