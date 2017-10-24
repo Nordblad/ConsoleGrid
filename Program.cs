@@ -11,50 +11,25 @@ namespace arbetsprob
         {
             Console.WriteLine("Hello World!");
             var grid = GetTestGrid();
-
             RenderGrid(grid);
-
-            //Console.Read();
         }
 
         public static void RenderGrid(Grid grid)
         {
             var contentWidth = grid.Columns.Sum(x => x.Width) + ((grid.Columns.Count() - 1) * 3) + 2;
 
-            Console.WriteLine('┏' + string.Join("┳", grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┓');
-            // var headerContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => RenderColData(col, col.Header, true)));
-            // Console.WriteLine("┃ " + headerContent + " ┃");
-
+            Console.WriteLine('┏' + string.Join("┳", grid.Columns.Select(col => new string('━', col.Width + 2))) + '┓');
             Console.WriteLine("┃ " + string.Join(" ┃ ", grid.Columns.Select(col => AlignText(col.Header, Alignment.Left, col.Width))) + " ┃");
-
-            Console.WriteLine('┣' + string.Join("╋", grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┫');
-
-            // Console.BackgroundColor = ConsoleColor.DarkBlue;
-            // Console.ForegroundColor = ConsoleColor.Gray;
-            // Console.ResetColor();
+            Console.WriteLine('┣' + string.Join("╋", grid.Columns.Select(col => new string('━', col.Width + 2))) + '┫');
             for (var r = 0; r < grid.Rows.Count; r++)
             {
-                var rowContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => RenderColData(col, grid.Rows[r][i])));
+                var rowContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => AlignText(grid.Rows[r][i], col.Alignment, col.Width)));
                 Console.WriteLine("┃ " + rowContent + " ┃");
             }
-            Console.WriteLine('┗' + string.Join('┻', grid.Columns.Select((col, i) => new string('━', col.Width + 2))) + '┛');
+            Console.WriteLine('┗' + string.Join('┻', grid.Columns.Select(col => Repeat('━', col.Width + 2))) + '┛');
         }
-
-        private static string Spaces(int len) { return new string(' ', len); }
-        private static string RenderColData(Column column, string value, bool header = false)
-        {
-            var spaceCount = column.Width - value.Length;
-            if (header)
-            {
-                return value.ToUpper() + Spaces(spaceCount);
-            }
-            if (column.Alignment == Alignment.Left)
-            {
-                return value + Spaces(spaceCount);
-            }
-            return Spaces(spaceCount) + value;
-        }
-
+        private static string Spaces(int count) { return Repeat(' ', count); }
+        private static string Repeat(char c, int count) { return new string(c, count); }
         private static string AlignText(string text, Alignment alignment, int width)
         {
             var spaceCount = width - text.Length;
@@ -64,28 +39,6 @@ namespace arbetsprob
             }
             return Spaces(spaceCount) + text;
         }
-        // private static string RenderColData(Column column, string value)
-        // {
-        //     var spaces = column.Width - value.Length;
-        //     var sb = new StringBuilder();
-        //     if (column.Alignment == Alignment.Left)
-        //     {
-        //         sb.Append(value);
-        //         sb.Append(' ', spaces);
-        //     }
-        //     else
-        //     {
-        //         sb.Append(' ', spaces);
-        //         sb.Append(value);
-        //     }
-        //     return sb.ToString();
-        // }
-
-        private void RenderGridHeader(List<Column> columns)
-        {
-
-        }
-
         private static Grid GetTestGrid()
         {
             var grid = new Grid()
@@ -96,14 +49,15 @@ namespace arbetsprob
                     new Column(3, "Regline", 13),
                     new Column(4, "Time", 5),
                     new Column(5, "OrderId", 7, Alignment.Right),
-                    new Column(6, "Invoice", 7, Alignment.Right)
+                    new Column(6, "Invoice", 7, Alignment.Right),
+                    new Column(7, "Total", 12, Alignment.Right)
                 },
                 Rows = new List<string[]>() {
-                    Row(1, "Peter Stormare", "Visitor", "14:45", 51325, "▩ ▢"),
-                    Row(2, "Mary Louise Parker", "Exhibitor", "14:54", 51341, "✓"),
-                    Row(3, "Claire Danes", "Exhibitor", "08:11", 50933,"░░"),
-                    Row(4, "Mark Wahlberg", "VIP", "20:30", 51333, "✓"),
-                    Row(5, "Seth Romatelli", "Visitor", "13:04", 54012, ""),
+                    Row(1, "Peter Stormare", "Visitor", "14:45", 51325, "▩ ▢", "2 149.00:-"),
+                    Row(2, "Mary Louise Parker", "Exhibitor", "14:54", 51341, "✓", "0.00:-"),
+                    Row(3, "Claire Danes", "Exhibitor", "08:11", 50933,"", "459.95:-"),
+                    Row(4, "Mark Wahlberg", "VIP", "20:30", 51333, "✓", "459.95:-"),
+                    Row(5, "Seth Romatelli", "Visitor", "13:04", 54012, "", "59.95:-"),
                 }
             };
             return grid;
@@ -114,24 +68,6 @@ namespace arbetsprob
             return colData.Select(x => x.ToString()).ToArray();
         }
     }
-
-    // public static class StaticHelpers
-    // {
-    //     public static void AddColData(this StringBuilder sb, Column column, string value)
-    //     {
-    //         var spaces = column.Width - value.Length;
-    //         if (column.Alignment == Alignment.Left)
-    //         {
-    //             sb.Append(value);
-    //             sb.Append(' ', spaces);
-    //         }
-    //         else
-    //         {
-    //             sb.Append(' ', spaces);
-    //             sb.Append(value);
-    //         }
-    //     }
-    // }
 
     public class Grid
     {
