@@ -16,6 +16,7 @@ namespace arbetsprob
 
         public static void RenderGrid(Grid grid)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             var contentWidth = grid.Columns.Sum(x => x.Width) + ((grid.Columns.Count() - 1) * 3) + 2;
 
             Console.WriteLine('┏' + string.Join("┳", grid.Columns.Select(col => new string('━', col.Width + 2))) + '┓');
@@ -26,7 +27,7 @@ namespace arbetsprob
                 var rowContent = string.Join(" ┃ ", grid.Columns.Select((col, i) => AlignText(grid.Rows[r][i], col.Alignment, col.Width)));
                 Console.WriteLine("┃ " + rowContent + " ┃");
             }
-            Console.WriteLine('┗' + string.Join('┻', grid.Columns.Select(col => Repeat('━', col.Width + 2))) + '┛');
+            Console.WriteLine('┗' + string.Join("┻", grid.Columns.Select(col => Repeat('━', col.Width + 2))) + '┛');
         }
         private static string Spaces(int count) { return Repeat(' ', count); }
         private static string Repeat(char c, int count) { return new string(c, count); }
@@ -53,7 +54,7 @@ namespace arbetsprob
                     new Column(7, "Total", 12, Alignment.Right)
                 },
                 Rows = new List<string[]>() {
-                    Row(1, "Peter Stormare", "Visitor", "14:45", 51325, "▩ ▢", "2 149.00:-"),
+                    Row(1, "Peter Stormare", "Visitor", "14:45", 51325, "", "2 149.00:-"),
                     Row(2, "Mary Louise Parker", "Exhibitor", "14:54", 51341, "✓", "0.00:-"),
                     Row(3, "Claire Danes", "Exhibitor", "08:11", 50933,"", "459.95:-"),
                     Row(4, "Mark Wahlberg", "VIP", "20:30", 51333, "✓", "459.95:-"),
@@ -93,7 +94,7 @@ namespace arbetsprob
     public enum Alignment
     {
         Left = 1,
-        Center = 2,
+        //Center = 2,
         Right = 3
     }
 }
